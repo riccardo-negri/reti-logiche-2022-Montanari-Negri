@@ -1,4 +1,4 @@
-# Vivado Installation on PopOS 21.10
+# Vivado Installation on PopOS 21.10 VM
 * Make sure you have 30GB of free space
 * Version 2016.4 [download](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools/archive.html)
 * Register on xilinx.com: I used Polimi mail
