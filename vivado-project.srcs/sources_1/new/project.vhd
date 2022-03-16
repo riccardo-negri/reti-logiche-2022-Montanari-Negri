@@ -56,7 +56,7 @@ begin
                     if(i_start='1') then
                         o_en <= '0';
                         o_we <= '0';
-                   
+                        internal_state <= S00;
                         finished_reading <= false;
                         read_addr <= (others => '0');
                         write_addr <= "0000001111101000";
@@ -76,7 +76,12 @@ begin
                 when FETCH_WORDS_NUMBER =>
                     words_number <= i_data;
                     words_left <= i_data;
-                    state <= CALL_READ;
+                    if (i_data = 0) then
+                        state <= DONE;
+                    else
+                        state <= CALL_READ;
+                    end if;
+                    
                     
                 when CALL_READ =>
                     o_address <= read_addr;
