@@ -107,38 +107,46 @@ begin
                     case internal_state is
                         when S00 =>
                             if w_word(w_word_index) = '0' then
-                                z_word <= z_word + ("00" & std_logic_vector(to_unsigned(0,shift)));
+                                z_word(shift+1) <= '0';
+                                z_word(shift) <= '0';
                                 internal_state <= S00;
                             end if;
                             if w_word(w_word_index) = '1' then
-                                z_word <= z_word + ("11" & std_logic_vector(to_unsigned(0,shift)));
+                                z_word(shift+1) <= '1';
+                                z_word(shift) <= '1';
                                 internal_state <= S10;
                             end if;
                         when S01 =>
                             if w_word(w_word_index) = '0' then
-                                z_word <= z_word + ("11" & std_logic_vector(to_unsigned(0,shift)));
+                                z_word(shift+1) <= '1';
+                                z_word(shift) <= '1';
                                 internal_state <= S00;
                             end if;
                             if w_word(w_word_index) = '1' then
-                                z_word <= z_word + ("00" & std_logic_vector(to_unsigned(0,shift)));
+                                z_word(shift+1) <= '0';
+                                z_word(shift) <= '0';
                                 internal_state <= S10;
                             end if;
                         when S10 =>
                             if w_word(w_word_index) = '0' then
-                                z_word <= z_word + ("01" & std_logic_vector(to_unsigned(0,shift)));
+                                z_word(shift+1) <= '0';
+                                z_word(shift) <= '1';
                                 internal_state <= S01;
                             end if;
                             if w_word(w_word_index) = '1' then
-                                z_word <= z_word + ("10" & std_logic_vector(to_unsigned(0,shift)));
+                                z_word(shift+1) <= '1';
+                                z_word(shift) <= '0';
                                 internal_state <= S11;
                             end if;
                         when S11 =>
                             if w_word(w_word_index) = '0' then
-                                z_word <= z_word + ("10" & std_logic_vector(to_unsigned(0,shift)));
+                                z_word(shift+1) <= '1';
+                                z_word(shift) <= '0';
                                 internal_state <= S01;
                             end if;
                             if w_word(w_word_index) = '1' then
-                                z_word <= z_word + ("01" & std_logic_vector(to_unsigned(0,shift)));
+                                z_word(shift+1) <= '0';
+                                z_word(shift) <= '1';
                                 internal_state <= S11;
                             end if;
                     end case;
