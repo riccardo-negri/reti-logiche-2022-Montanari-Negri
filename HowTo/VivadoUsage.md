@@ -3,7 +3,7 @@ Prof Miele lecture about Vivado [link](https://politecnicomilano.webex.com/recor
 
 ### Create a project
 * RTL Project
-* Select a board that starts with `xc7` (in the tutorial the professor selected the board `xc7vx485tffg1157-1`, if there is a problem with the license try with `xc7a200tffv1156-1`)
+* Select the board "Artix-7 FPGA xc7a200tfbg484-1" (in the tutorial the professor selected the board `xc7vx485tffg1157-1`, if there is a problem with the license try with `xc7a200tffv1156-1`)
 * To create or import .vhd file: select `Design Sources` folder, right click, click `add sources`, select `add or create design sources` and  make sure `copy sources into project` is checked
 
 ### Vivado UI

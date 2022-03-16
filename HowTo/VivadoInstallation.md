@@ -5,6 +5,6 @@
 * Run `sudo apt-get install libncurses5-dev libncursesw5-dev libncurses5 libtinfo5 libtinfo-dev`
 * Run the bin file you downloaded `./Xilinx_Vivado_SDK_2016.4_0124_1_Lin64.bin`
 * Login with the account you created
-* Select Vivado HL Design Edition
+* Select Vivado HL Webpack Edition (I installed the Design Edition)
 * Uncheck Zynq-7000 e Zynq Ultrascale+, UltraScale, UltraScale+ and License Manager to save space
 * Enjoy, hopefully
