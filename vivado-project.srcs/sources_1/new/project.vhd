@@ -96,46 +96,38 @@ begin
                     case internal_state is
                         when S00 =>
                             if w_word(w_word_index) = '0' then
-                                z_word(shift+1) <= '0';
-                                z_word(shift) <= '0';
+                                z_word(shift+1 downto shift) <= "00";
                                 internal_state <= S00;
                             end if;
                             if w_word(w_word_index) = '1' then
-                                z_word(shift+1) <= '1';
-                                z_word(shift) <= '1';
+                                z_word(shift+1 downto shift) <= "11";
                                 internal_state <= S10;
                             end if;
                         when S01 =>
                             if w_word(w_word_index) = '0' then
-                                z_word(shift+1) <= '1';
-                                z_word(shift) <= '1';
+                                z_word(shift+1 downto shift) <= "11";
                                 internal_state <= S00;
                             end if;
                             if w_word(w_word_index) = '1' then
-                                z_word(shift+1) <= '0';
-                                z_word(shift) <= '0';
+                                z_word(shift+1 downto shift) <= "00";
                                 internal_state <= S10;
                             end if;
                         when S10 =>
                             if w_word(w_word_index) = '0' then
-                                z_word(shift+1) <= '0';
-                                z_word(shift) <= '1';
+                                z_word(shift+1 downto shift) <= "01";
                                 internal_state <= S01;
                             end if;
                             if w_word(w_word_index) = '1' then
-                                z_word(shift+1) <= '1';
-                                z_word(shift) <= '0';
+                                z_word(shift+1 downto shift) <= "10";
                                 internal_state <= S11;
                             end if;
                         when S11 =>
                             if w_word(w_word_index) = '0' then
-                                z_word(shift+1) <= '1';
-                                z_word(shift) <= '0';
+                                z_word(shift+1 downto shift) <= "10";
                                 internal_state <= S01;
                             end if;
                             if w_word(w_word_index) = '1' then
-                                z_word(shift+1) <= '0';
-                                z_word(shift) <= '1';
+                                z_word(shift+1 downto shift) <= "01";
                                 internal_state <= S11;
                             end if;
                     end case;
