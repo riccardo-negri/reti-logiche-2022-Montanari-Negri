@@ -28,7 +28,7 @@ end project_reti_logiche;
 
 architecture Behavioral of project_reti_logiche is
 
-type state_type is (START, GET_WORDS_NUMBER, WAIT_WORDS_NUMBER, FETCH_WORDS_NUMBER, CALL_READ, WAIT_READ, FETCH_READ, ENCODER_1_TO_2, DONE, WRITE, AFTER_DONE);
+type state_type is (START, WAIT_WORDS_NUMBER, FETCH_WORDS_NUMBER, CALL_READ, WAIT_READ, FETCH_READ, ENCODER_1_TO_2, DONE, WRITE, AFTER_DONE);
 type internal_state_type is (S00, S01, S10, S11);
 
 signal state : state_type;
@@ -49,20 +49,16 @@ begin
             case state is
                 when START =>
                     if(i_start='1') then
-                        o_en <= '0';
                         internal_state <= S00;
                         finished_reading <= false;
-                        read_addr <= (others => '0');
                         write_addr <= "0000001111101000";
-                        state <= GET_WORDS_NUMBER;
+                        -- GET_WORDS_NUMBER
+                        o_en <= '1';
+                        o_we <= '0';
+                        o_address <= (others => '0');
+                        read_addr <= "0000000000000001";
+                        state <= WAIT_WORDS_NUMBER;
                     end if;
-                
-                when GET_WORDS_NUMBER =>
-                    o_en <= '1';
-                    o_we <= '0';
-                    o_address <= (others => '0');
-                    read_addr <= read_addr + 1;
-                    state <= WAIT_WORDS_NUMBER;
                 
                 when WAIT_WORDS_NUMBER =>
                     o_en <= '0';
