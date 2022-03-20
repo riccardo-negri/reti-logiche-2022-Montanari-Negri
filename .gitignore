@@ -1,5 +1,6 @@
 # JetBrains related
 .idea/
+test
 
 # VS Code related
 .vscode/
