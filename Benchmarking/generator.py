@@ -142,20 +142,22 @@ FSA = {
 }
 
 
-def u_to_y(u):
-    state = "00"
+def u_to_y(u, starting):
+    state = starting
     out_string = ""
     in_string = format(u + 256, 'b')[1:]
     for b in in_string:
         out_string += FSA[state]["out"][int(b)]
         state = FSA[state]["next"][int(b)]
-    return [int(out_string[:8], 2), int(out_string[8:], 2)]
+    return [int(out_string[:8], 2), int(out_string[8:], 2)], state
 
 
 def calculate_output(in_list):
     out_list = []
+    starting_state = "00"
     for i in in_list:
-        out_list += u_to_y(i)
+        new_list, starting_state = u_to_y(i, starting_state)
+        out_list += new_list
     return out_list
 
 
@@ -176,7 +178,8 @@ def generate_text(in_list, out_list):
 
     # add output dependent lines
     for i, n in enumerate(out_list):
-        full_text += '\tassert RAM(1000) = std_logic_vector(to_unsigned( ' + str(n)
+        full_text += '\tassert RAM(' + str(1000 + i)
+        full_text += ') = std_logic_vector(to_unsigned( ' + str(n)
         full_text += ' , 8)) report "TEST FALLITO (WORKING ZONE). Expected  ' + str(n)
         full_text += '  found " & integer\'image(to_integer(unsigned(RAM(' + str(1000 + i)
         full_text += '))))  severity failure;\n'
