@@ -2,6 +2,9 @@
 .idea/
 test
 
+# automatic generated tests
+*/generated/
+
 # VS Code related
 .vscode/
 .vs/
