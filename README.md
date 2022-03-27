@@ -12,10 +12,12 @@ Languages:
 * VHDL 
 * Python3
 * Markdown
+* LaTeX
 
 Developement environments:
 * Vivado ([installation guide](https://github.com/riccardo-negri/reti-logiche-2022-Montanari-Negri/tree/main/HowTo/VivadoInstallation.md) and [usage guide](https://github.com/riccardo-negri/reti-logiche-2022-Montanari-Negri/tree/main/HowTo/VivadoUsage.md))
 * Pycharm
 * Obsidian
+* TeXstudio
 	
 ## Setup
