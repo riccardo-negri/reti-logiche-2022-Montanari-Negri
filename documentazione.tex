@@ -36,25 +36,21 @@
 
 \setlength\parindent{0pt} % Removes all indentation from paragraphs
 
-%\renewcommand{\labelenumi}{\alph{enumi}.} % Make numbering in the enumerate environment by letter rather than number (e.g. section 6)
-
-%\usepackage{times} % Uncomment to use the Times New Roman font
-
 %----------------------------------------------------------------------------------------
 %	DOCUMENT INFORMATION
 %----------------------------------------------------------------------------------------
 
 \title{Prova Finale di Reti Logiche} % Title
-\author{Truong Kien Tuong} % Author name
-\date{May 1st, 2020}
+\author{Montanari Tommaso e Negri Riccardo} % Author name
+\date{1 Aprile 2022}
 
 \begin{document}
 \maketitle % Insert the title, author and date
 \begin{center}
-\begin{tabular}{l r}
-Matricola: & 887907\\ % Partner names
-Codice Persona: & 10582491\\
-Docente: & Gianluca Palermo % Instructor/supervisor
+\begin{tabular}{l l l l}
+Docente: & Salice Fabio & & \\ 
+Studente 1: & Montanari Tommaso & 10661941 & 932673\\
+Studente 2: & Negri Riccardo & 10729927 & 936820 
 \end{tabular}
 \end{center}
 
@@ -125,7 +121,122 @@ Architetttura
 %----------------------------------------------------------------------------------------
 
 \section{Risultati sperimentali}
-Risultati sperimentali
+\subsection{Sintesi}
+Il componente sviluppato è sintetizzabile ed implementabile. 
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=1\textwidth]{schematic.eps}
+	\caption{Schema post-sintesi}
+\end{figure}
+\linebreak
+Nella seguente tabella sono indicati i componenti utilizzati nella sintesi.
+\begin{center}
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		Site Type   & Used & Available & Utilization\% \\
+		\hline
+		LUT as Logic & 117 & 134600 & 0.09 \\
+		\hline
+		Register as Flip Flop & 95 & 269200  & 0.04\\
+		\hline
+		F7 Muxes & 1 & 67300 & <0.01\\
+		\hline
+	\end{tabular}
+\end{center}
+
+
+
+\subsection{Simulazioni}
+Al fine di verificare il corretto funzionamento del componente sono stati eseguiti diversi test bench in simulazioni Behavioural, Post-synthesis functional e Post-synthesis timing. 
+Di seguito sono riportati i test significativi effettuati con relativa spiegazione, tempi ottenuti e grafico d'onda.
+
+\subsubsection{Flussi successivi}
+Tramite questo test si verifica la correttezza  nel caso di codifica di più flussi uno dopo l'altro. Nel testbench usato vengono codificati tre flussi (senza reset dopo ogni flusso).
+\begin{description}
+	\item[Behavioural] 21850 ns
+	\item[Post-synthesis functional] 22350100 ps
+	\item[Post-synthesis timing] 22353714 ps
+\end{description}
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=1\textwidth]{Assets/tb1.png}
+	\caption{Post-synthesis functional simulation waveform}
+\end{figure}
+
+\subsubsection{Reset asincrono}
+Tramite questo test si verifica il corretto funzionamento del reset asincrono.
+\begin{description}
+	\item[Behavioural] 10650 ns
+	\item[Post-synthesis functional] 10750100 ps
+	\item[Post-synthesis timing] 10753714 ps
+\end{description}
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=1\textwidth]{Assets/tb2.png}
+	\caption{Post-synthesis functional simulation waveform}
+\end{figure}
+
+\subsubsection{Sequenza di lunghezza massima}
+\paragraph{}Tramite questo test si verifica il corretto funzionamento nel caso di sequenza di ingresso di lunghezza massima: 255 byte.
+\begin{description}
+	\item[Behavioural] 332450 ns
+	\item[Post-synthesis functional] 332550100 ps
+	\item[Post-synthesis timing] 332553714 ps
+\end{description}
+In questo caso non si riporta grafico della forma d'onda perché non è possibile distinguere i valori che i segnali assumono nella vista "fit".
+%\begin{figure}[!htb]
+%	\centering
+%	\includegraphics[width=1\textwidth]{Assets/tb3.png}
+%	\caption{Post-synthesis functional simulation waveform}
+%\end{figure}
+
+\subsubsection{Sequenza di lunghezza nulla}
+Tramite questo test si verifica il corretto funzionamento nel caso di sequenza di ingresso di lunghezza minima: 0 byte.
+\begin{description}
+	\item[Behavioural] 950 ns
+	\item[Post-synthesis functional] 1050100 ps
+	\item[Post-synthesis timing] 1053714 ps
+\end{description}
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=1\textwidth]{Assets/tb4.png}
+	\caption{Post-synthesis functional simulation waveform}
+\end{figure}
+
+\subsubsection{Double processing sulla stessa RAM}
+Tramite questo test si verifica il corretto funzionamento nel caso di scrittura sulla stessa RAM.
+\begin{description}
+	\item[Behavioural] 9250 ns
+	\item[Post-synthesis functional] 9550100 ps
+	\item[Post-synthesis timing] 9553714 ps
+\end{description}
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width=1\textwidth]{Assets/tb5.png}
+	\caption{Post-synthesis functional simulation waveform}
+\end{figure}
+
+\subsubsection{Tests con reset}
+Test bench, con reset dopo ogni test, che effettua 1000 test (generati casualmente con uno script Python).
+\begin{description}
+	\item[Behavioural] 172743250 ns
+	\item[Post-synthesis functional] 172943150100 ps
+	\item[Post-synthesis timing] 172943153714 ps
+\end{description}
+In questo caso non si riporta grafico della forma d'onda perché non è possibile distinguere i valori che i segnali assumono nella vista "fit".
+
+\subsubsection{Tests senza reset}
+Test bench, senza reset dopo ogni test, che effettua 1000 test (generati casualmente con uno script Python).
+\begin{description}
+	\item[Behavioural] 172543450 ns
+	\item[Post-synthesis functional] 172743350100 ps
+	\item[Post-synthesis timing] 172743353714 ps
+\end{description}
+In questo caso non si riporta grafico della forma d'onda perché non è possibile distinguere i valori che i segnali assumono nella vista "fit".
+
+\subsection{Osservazioni}
+Osservazioni su tempo di clock minimo.\\
+Osservazioni su come reset non genera ritardi(?).
 
 %----------------------------------------------------------------------------------------
 %	SECTION 4
@@ -133,7 +244,6 @@ Risultati sperimentali
 
 \section{Conclusioni}
 
-Conclusioni
 
 %----------------------------------------------------------------------------------------
 
