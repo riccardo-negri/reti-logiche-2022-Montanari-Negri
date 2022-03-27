@@ -30,6 +30,10 @@
 \usepackage{caption}
 \usepackage{tikz}
 
+
+\usepackage{float}
+
+
 \usetikzlibrary{arrows,automata, positioning}
 
 \usepackage{import}
@@ -123,12 +127,11 @@ Architetttura
 \section{Risultati sperimentali}
 \subsection{Sintesi}
 Il componente sviluppato è sintetizzabile ed implementabile. 
-\begin{figure}[!htb]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=1\textwidth]{schematic.eps}
 	\caption{Schema post-sintesi}
 \end{figure}
-\linebreak
 Nella seguente tabella sono indicati i componenti utilizzati nella sintesi.
 \begin{center}
 	\begin{tabular}{|c|c|c|c|}
@@ -157,7 +160,7 @@ Tramite questo test si verifica la correttezza  nel caso di codifica di più flu
 	\item[Post-synthesis functional] 22350100 ps
 	\item[Post-synthesis timing] 22353714 ps
 \end{description}
-\begin{figure}[!htb]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=1\textwidth]{Assets/tb1.png}
 	\caption{Post-synthesis functional simulation waveform}
@@ -197,7 +200,7 @@ Tramite questo test si verifica il corretto funzionamento nel caso di sequenza d
 	\item[Post-synthesis functional] 1050100 ps
 	\item[Post-synthesis timing] 1053714 ps
 \end{description}
-\begin{figure}[!htb]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=1\textwidth]{Assets/tb4.png}
 	\caption{Post-synthesis functional simulation waveform}
@@ -210,7 +213,7 @@ Tramite questo test si verifica il corretto funzionamento nel caso di scrittura 
 	\item[Post-synthesis functional] 9550100 ps
 	\item[Post-synthesis timing] 9553714 ps
 \end{description}
-\begin{figure}[!htb]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=1\textwidth]{Assets/tb5.png}
 	\caption{Post-synthesis functional simulation waveform}
