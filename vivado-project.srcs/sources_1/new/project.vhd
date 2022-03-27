@@ -44,7 +44,8 @@ begin
         if i_rst = '1' then
             state <= START;
             o_done <= '0';
-            
+            o_en <= '0';
+              
         elsif rising_edge(i_clk) then
             case state is
                 when START =>
