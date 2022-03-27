@@ -74,10 +74,40 @@ La prova prevede l'implementazione in VHDL di una macchine che opera su una memo
 La macchina deve per prima cosa leggere il primo byte dalla memoria che identifica il numero di parole che sono
 state fornite come input, questa informazione è importante per capire quando la macchina deve terminare la lettura.
 
-Dopodiché ogni parola successiva viene tradotta in due parole di memoria che vengono scritte progressivamente a partire
-dal millesimo indirizzo di memoria.
+Dopodiché ogni parola successiva viene tradotta in due parole di memoria che vengono scritte progressivamente in un'altra parte della memoria.
 
-Esempio:
+\subsection{Esempio}
+
+\begin{tabular}{c c c}
+	Indirizzo & Valore & Codifica binaria \\
+	0 & 2 & 0000 0010 \\
+	1 & 35 & 0010 0011 \\
+	2 & 161 & 1010 0001 \\
+\end{tabular}
+\\
+\\
+Questo stato della memoria si traduce nell'input [35, 161] e in questo caso la lunghezza dell'input W=2 quindi mi aspetto una lunghezza dell'output Z=4.
+\\
+\\
+\begin{tabular}{c c c}
+	Indirizzo & Valore & Codifica binaria \\
+	1000 & 13 & 0000 1101 \\
+	1001 & 206 & 1100 1110 \\
+	1002 & 97 & 0110 0001 \\
+	1003 & 195 & 1100 0011 \\
+\end{tabular}
+\\
+\\
+Rappresenta l'output [13, 206, 97, 195] dove [13, 206] sono i numeri che sono stati prodotti dal 35 in ingresso mentre [97, 195] sono ottenuti processando 161
+
+\subsection{Ipotesi Progettuali}
+\begin{itemize}
+\item {Si utilizza la scheda Artix-7 FPGA xc7a200tfbg484-1}
+\item {Ogni byte può contenere numeri da 0 a 255.}
+\item {La quantità di numeri in ingresso (W) è contenuta in una parola da un byte quindi anche il numero massimo di parole da tradurre è 255.}
+\item {Dato che l'input occupa al massimo 256 byte posso scrivere sui byte successivi quindi l'output parte sempre dal millesimo indirizzo di memoria che sicuramente non contiene l'input}
+\end{itemize}
+
 
 
 

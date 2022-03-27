@@ -7,6 +7,8 @@ test
 
 # TeXstudio
 *.synctex.gz
+*.log
+*.aux
 
 # VS Code related
 .vscode/
