@@ -5,6 +5,9 @@ test
 # automatic generated tests
 */generated/
 
+# TeXstudio
+*.synctex.gz
+
 # VS Code related
 .vscode/
 .vs/
