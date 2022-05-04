@@ -76,6 +76,8 @@ state fornite come input, questa informazione è importante per capire quando la
 
 Dopodiché ogni parola successiva viene tradotta in due parole di memoria che vengono scritte progressivamente in un'altra parte della memoria.
 
+Le parole di memoria sono interpretate com un flusso continuo e l'uscita è un flusso di lunghezza doppia. Visto che i byte vengono tradotti come un unico flusso l'output di una certa parola dipende anche da quelle precedenti e non possono essere processate separatamente.
+
 \subsection{Esempio}
 
 \begin{tabular}{c c c}
@@ -98,7 +100,7 @@ Questo stato della memoria si traduce nell'input [35, 161] e in questo caso la l
 \end{tabular}
 \\
 \\
-Rappresenta l'output [13, 206, 97, 195] dove [13, 206] sono i numeri che sono stati prodotti dal 35 in ingresso mentre [97, 195] sono ottenuti processando 161
+Rappresenta l'output [13, 206, 97, 195] dove la codifica dei numeri [13, 206] è l'output prodotto dai bit dal 35 in ingresso. Mentre [97, 195] sono il risultato dei bit presenti nella la codifica di 161.
 
 \subsection{Ipotesi Progettuali}
 \begin{itemize}
@@ -116,7 +118,34 @@ Rappresenta l'output [13, 206, 97, 195] dove [13, 206] sono i numeri che sono st
 %----------------------------------------------------------------------------------------
 
 \section{Architetttura}
-Architetttura
+L'implementazione è stata realizzata in un solo modulo per sempllicità, si possono distinguere due parti all'interno della macchina che cooperano per raggiungere il risultato. È presente una macchina che simula il funzionamento dell'automa a stati finiti fornito nella specifica, questa è responsabile della traduzione uno a due dei bit. Inoltre è presente una seconda macchina principale che si occupa della lettura e scrittura dei flussi di bit e tratta la prima come una scatola nera. Ciascuna macchina ha una variabile separata che contiene il suo stato.
+
+\subsection{Descrizione ad alto livello}
+Questa è la descrizione a parole delle fasi che l'esecuzione segue. All'interno del programma ciascuna di queste diverse fasi corrisponde ad uno stato (o a più stati).
+
+\begin{enumerate}
+	\item Inizio:
+	\begin{enumerate}
+		\item Legge il primo byte di memoria contenente la lunghezza dell'input e salva il valore in una variabile.
+		\item Inizializza il punto di lettura al secondo byte e quello di scrittura al millesimo.
+	\end{enumerate}
+	\item Traduzione:
+	\begin{enumerate}
+		\item Legge un byte e sposta il punto di lettura.
+		\item Simula un passo dell'automa dando in ingresso un bit dal byte appena letto. (Ripetuto 4 volte)
+		\item L'output dell'automa ora contiene 8 bit quindi viene salvato in una parola di memoria e si incrementa l'indirizzo di scrittura.
+		\item Se sono rimasti bit da tradurre nel byte letto torna al punto 2.b
+		\item Altrimenti se sono rimasti byte da leggere torna al punto 2.a
+		\item Altrimenti termina.
+	\end{enumerate}
+\end{enumerate}
+
+Ogni operazione di lettura o scrittura nella memoria si scompone in più stati nel programma.
+Ad esempio nel caso della lettura: richiesta della lettura, attesa della fine dell'operazione, utilizzo del dato letto o salvataggio in una variabile. 
+
+\subsection{Diagramma degli stati}
+
+\subsection{Macchina a stati finiti?}
 
 
 
