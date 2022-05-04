@@ -145,6 +145,41 @@ Ad esempio nel caso della lettura: richiesta della lettura, attesa della fine de
 
 \subsection{Diagramma degli stati}
 
+
+% { \epsilon }
+\begin{tikzpicture}[shorten >=1pt,node distance=3cm,node font=\small,on grid,auto,initial text={begin}]
+	\tikzstyle{every state}=[fill={rgb:black,1;white,10}]
+	
+	\node[state,text width=1.5cm,align=center,initial ]  (START)                 {Start};
+	\node[state,text width=1.5cm,align=center]                    (WWN) [right of=START]  {Wait\\Words\\Number};
+	\node[state,text width=1.5cm,align=center]                    (FWN) [right of=WWN]  {Fetch\\Words\\Number};
+	\node[state,text width=1.5cm,align=center]                    (DONE) [below of=WWN]  {Done};
+	\node[state,text width=1.5cm,align=center]                    (AD) [left of=DONE]  {After\\Done};
+	\node[state,text width=1.5cm,align=center]                    (CR) [below right of=FWN]  {Call\\Read};
+	\node[state,text width=1.5cm,align=center]                    (WR) [below right  of=CR]  {Wait\\Read};
+	\node[state,text width=1.5cm,align=center]                    (FR) [below of=WR]  {Fetch\\Read};
+	\node[state,text width=1.5cm,align=center]                    (WRITE) [below of=DONE]  {Write};
+	\node[state,text width=1.5cm,align=center]                    (E12) [below left of=FR]  {Encoder\\1 to 2};
+	
+	\path[->]
+	(START) edge [bend left] node [above] {i start = '1'} (WWN)
+	(WWN) edge (FWN)
+	(FWN) edge [bend left] node {i data = 0} (DONE)
+	(FWN) edge [bend left] node {i data $\ne$ 0} (CR)
+	(CR) edge [bend left] (WR)
+	(WR) edge (FR)
+	(FR) edge [bend left](E12)
+	(E12) edge [loop below] node [align=center] {w word index has\\any other value} ()
+	(E12) edge [bend right] node [below,align=center] {\\\\w word\\index = 0 or 4} (WRITE)
+	(WRITE) edge [bend right] node [below,align=center] {\\not\\finished \\reading} (E12)
+	(WRITE) edge node {words left = 0} (DONE)
+	(WRITE) edge [bend right] node [align=center] {finished\\reading} (CR)
+	(DONE) edge (AD)
+	(AD) edge node {i start = '0'} (START);
+\end{tikzpicture}
+
+
+
 \subsection{Macchina a stati finiti?}
 
 
