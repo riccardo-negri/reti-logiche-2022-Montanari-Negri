@@ -36,7 +36,12 @@
 
 \begin{document}
 \maketitle % Insert the title, author and date
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.365\textwidth]{Assets/logo.jpg}
+\end{figure}
 \begin{center}
+
 \begin{tabular}{l l l l}
 Docente: & Salice Fabio & & \\ 
 Studente 1: & Montanari Tommaso & 10661941 & 932673\\
@@ -342,13 +347,13 @@ In questo caso non si riporta grafico della forma d'onda perché non è possibil
 %----------------------------------------------------------------------------------------
 
 \section{Conclusioni}
-A seguito di estensivo testing effettuato tramite test benches scritti sia manualmente che generati casualmente, si ritiene che l’architettura progettata rispetti le specifiche. Le simulazioni sperimentali hanno mostrato la robustezza del componente che anche in condizioni di “stress” riesce a portare a termine il task richiesto.
+A seguito di estensivo testing effettuato tramite test bench scritti sia manualmente che generati casualmente, si ritiene che l’architettura progettata rispetti le specifiche. Reputiamo inoltre il componente adeguatamente robusto perché ha soddisfatto le specifiche anche in casi limite.
 \\
 \\
-Nella realizzazione del componente si è utilizzato un singolo process per avere una maggiore chiarezza e un minore utilizzo di segnali.
+Nella realizzazione del componente in VHDL si è utilizzato un singolo process per avere una maggiore chiarezza, un minore utilizzo di segnali e avere un codice molto leggibile.
 \\
 \\
-Il design è risultato sintetizzabile ed implementabile. La soluzione adottata sfrutta quasi interamente LUT e Flip Flop e un F7 Muxes e non fa quindi uso di Latch.
+Il design è risultato sintetizzabile ed implementabile. La soluzione adottata sfrutta quasi interamente LUT e Flip Flop fatta eccezione per un F7 Muxes, non fa quindi uso di Latch.
 \\
 
 %----------------------------------------------------------------------------------------
