@@ -1,19 +1,4 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% University/School Laboratory Report
-% LaTeX Template
-% Version 3.1 (25/3/14)
-%
-% This template has been downloaded from:
-% http://www.LaTeXTemplates.com
-%
-% Original author:
-% Linux and Unix Users Group at Virginia Tech Wiki
-% (https://vtluug.org/wiki/Example_LaTeX_chem_lab_report)
-%
-% License:
-% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 %----------------------------------------------------------------------------------------
 %	PACKAGES AND DOCUMENT CONFIGURATIONS
@@ -46,7 +31,7 @@
 
 \title{Prova Finale di Reti Logiche} % Title
 \author{Montanari Tommaso e Negri Riccardo} % Author name
-\date{1 Aprile 2022}
+\date{15 Maggio 2022}
 
 \begin{document}
 \maketitle % Insert the title, author and date
@@ -58,28 +43,21 @@ Studente 2: & Negri Riccardo & 10729927 & 936820
 \end{tabular}
 \end{center}
 
-% If you wish to include an abstract, uncomment the lines below
-% \begin{abstract}
-% Abstract text
-% \end{abstract}
-
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
 
 \section{Introduzione}
 
-La prova prevede l'implementazione in VHDL di una macchine che opera su una memoria e svolge la seguente operazione.
-
-La macchina deve per prima cosa leggere il primo byte dalla memoria che identifica il numero di parole che sono
+La prova prevede l'implementazione in VHDL di un componente che opera su una memoria e svolge la seguente operazione: il componente deve per prima cosa leggere il primo byte dalla memoria che identifica il numero di parole che sono
 state fornite come input, questa informazione è importante per capire quando la macchina deve terminare la lettura.
 
-Dopodiché ogni parola successiva viene tradotta in due parole di memoria che vengono scritte progressivamente in un'altra parte della memoria.
+Dopodiché ogni parola successiva viene tradotta in due parole che vengono scritte progressivamente in un'altra parte della memoria.
 
-Le parole di memoria sono interpretate com un flusso continuo e l'uscita è un flusso di lunghezza doppia. Visto che i byte vengono tradotti come un unico flusso l'output di una certa parola dipende anche da quelle precedenti e non possono essere processate separatamente.
+Le parole di memoria sono interpretate come un flusso continuo e l'uscita è un flusso di lunghezza doppia. Visto che i byte vengono tradotti come un unico flusso l'output di una certa parola dipende anche da quelle precedenti e non possono essere processate separatamente.
 
 \subsection{Esempio}
-
+Dato lo stato iniziale della memoria qui riportato
 \begin{tabular}{c c c}
 	Indirizzo & Valore & Codifica binaria \\
 	0 & 2 & 0000 0010 \\
@@ -88,6 +66,7 @@ Le parole di memoria sono interpretate com un flusso continuo e l'uscita è un f
 \end{tabular}
 \\
 \\
+Il componente legge la prima parola che rappresenta la lunghezza dell'input W=2. Successivamente legge le parole rispettivamente all'indirizzo 1 e 2
 Questo stato della memoria si traduce nell'input [35, 161] e in questo caso la lunghezza dell'input W=2 quindi mi aspetto una lunghezza dell'output Z=4.
 \\
 \\
@@ -110,6 +89,15 @@ Rappresenta l'output [13, 206, 97, 195] dove la codifica dei numeri [13, 206] è
 \item {Dato che l'input occupa al massimo 256 byte posso scrivere sui byte successivi quindi l'output parte sempre dal millesimo indirizzo di memoria che sicuramente non contiene l'input}
 \end{itemize}
 
+
+
+%----------------------------------------------------------------------------------------
+%	SECTION 2
+%----------------------------------------------------------------------------------------
+
+\section{Architetttura}
+L'implementazione è stata realizzata in un solo modulo per sempllicità, si possono distinguere due parti all'interno della macchina che cooperano per raggiungere il risultato. È presente una macchina che simula il funzionamento dell'automa a stati finiti fornito nella specifica, questa è responsabile della traduzione uno a due dei bit. Inoltre è presente una seconda macchina principale che si occupa della lettura e scrittura dei flussi di bit e tratta la prima come una scatola nera. Ciascuna macchina ha una variabile separata che contiene il suo stato.
+
 \subsection{Segnali}
 \begin{itemize}
 	\item \textbf{i\_clk:} Segnale di clock
@@ -119,21 +107,12 @@ Rappresenta l'output [13, 206, 97, 195] dove la codifica dei numeri [13, 206] è
 \end{itemize}
 
 \begin{itemize}
+	\item \textbf{o\_address:} Un vettore di 16 bit che contiene l'indirizzo della parola da scrivere o da leggere.
 	\item \textbf{o\_done:} Quando la macchina ha finito l'esecuzione viene portato a 1 e aspetta che i\_start sia 0 poi anche 0\_done è riportato a 0 (handshake).
 	\item \textbf{o\_en:} Se settato a 1 richiede l'operazione di lettura o scrittura.
 	\item \textbf{o\_we:} Se settato a 1 l'operazione richiesta da o\_en è scrittura altrimenti è lettura.
 	\item \textbf{o\_data:} Vettore da 8 bit che contiene il la parola di memoria da scrivere.
 \end{itemize}
-
-
-
-
-%----------------------------------------------------------------------------------------
-%	SECTION 2
-%----------------------------------------------------------------------------------------
-
-\section{Architetttura}
-L'implementazione è stata realizzata in un solo modulo per sempllicità, si possono distinguere due parti all'interno della macchina che cooperano per raggiungere il risultato. È presente una macchina che simula il funzionamento dell'automa a stati finiti fornito nella specifica, questa è responsabile della traduzione uno a due dei bit. Inoltre è presente una seconda macchina principale che si occupa della lettura e scrittura dei flussi di bit e tratta la prima come una scatola nera. Ciascuna macchina ha una variabile separata che contiene il suo stato.
 
 \subsection{Descrizione ad alto livello}
 Questa è la descrizione a parole delle fasi che l'esecuzione segue. All'interno del programma ciascuna di queste diverse fasi corrisponde ad uno stato (o a più stati).
@@ -328,10 +307,6 @@ Test bench, senza reset dopo ogni test, che effettua 1000 test (generati casualm
 	\item[Post-synthesis timing] 172743353714 ps
 \end{description}
 In questo caso non si riporta grafico della forma d'onda perché non è possibile distinguere i valori che i segnali assumono nella vista "fit".
-
-\subsection{Osservazioni}
-Osservazioni su tempo di clock minimo.\\
-Osservazioni su come reset non genera ritardi(?).
 
 %----------------------------------------------------------------------------------------
 %	SECTION 4
