@@ -8,6 +8,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{appendix}
 \usepackage[T1]{fontenc}
+\usepackage[italian]{babel}
 \usepackage{siunitx} % Provides the \SI{}{} and \si{} command for typesetting SI units
 \usepackage{graphicx} % Required for the inclusion of images
 \usepackage{natbib} % Required to change bibliography style to APA
@@ -43,6 +44,9 @@ Studente 2: & Negri Riccardo & 10729927 & 936820
 \end{tabular}
 \end{center}
 
+\tableofcontents
+\pagebreak
+
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
@@ -52,12 +56,34 @@ Studente 2: & Negri Riccardo & 10729927 & 936820
 La prova prevede l'implementazione in VHDL di un componente che opera su una memoria e svolge la seguente operazione: il componente deve per prima cosa leggere il primo byte dalla memoria che identifica il numero di parole che sono
 state fornite come input, questa informazione è importante per capire quando la macchina deve terminare la lettura.
 
-Dopodiché ogni parola successiva viene tradotta in due parole che vengono scritte progressivamente in un'altra parte della memoria.
+Dopodiché ogni parola successiva viene tradotta in due parole che vengono scritte progressivamente in un'altra parte della memoria a partire dall'indirizzo 1000.
 
-Le parole di memoria sono interpretate come un flusso continuo e l'uscita è un flusso di lunghezza doppia. Visto che i byte vengono tradotti come un unico flusso l'output di una certa parola dipende anche da quelle precedenti e non possono essere processate separatamente.
+Le parole di memoria sono interpretate dal codificatore come un flusso continuo e l'uscita è un flusso di lunghezza doppia. Visto che i byte vengono tradotti come un unico flusso l'output di una certa parola dipende anche da quelle precedenti e non possono essere processate separatamente.
+
+\subsection{Codificatore Convoluzionale}
+\begin{tikzpicture}[shorten >=1pt,node distance=3cm,node font=\small,on grid,auto,initial text={}]
+	\tikzstyle{every state}=[fill={rgb:black,1;white,10}]
+	
+	\node[state,initial ]  (S01)                 {S01};
+	\node[state]                    (S00) [below left of=S01]  {S00};
+	\node[state]                    (S11) [below right of=S01]  {S11};
+	\node[state]                    (S10) [below right of=S00]  {S10};
+	
+	\path[->]
+	(S00) edge [loop left] node {0/00} ()
+	(S11) edge [loop right] node {1/01} ()
+	(S01) edge node [above, align=center] {0/11\\} (S00)
+	(S00) edge node [below, align=center] {\\1/11} (S10)
+	(S10) edge node [below, align=center] {\\1/10} (S11)
+	(S11) edge node [above, align=center] {0/10\\} (S01)
+	(S01) edge [bend left] node {1/00} (S10)
+	(S10) edge [bend left] node {0/01} (S01);
+\end{tikzpicture}
 
 \subsection{Esempio}
-Dato lo stato iniziale della memoria qui riportato
+Dato lo stato iniziale della memoria riportato di seguito il componente legge la prima parola che rappresenta la lunghezza dell'input (W=2). 
+\\
+\\
 \begin{tabular}{c c c}
 	Indirizzo & Valore & Codifica binaria \\
 	0 & 2 & 0000 0010 \\
@@ -65,9 +91,32 @@ Dato lo stato iniziale della memoria qui riportato
 	2 & 161 & 1010 0001 \\
 \end{tabular}
 \\
+\pagebreak
 \\
-Il componente legge la prima parola che rappresenta la lunghezza dell'input W=2. Successivamente legge le parole rispettivamente all'indirizzo 1 e 2
-Questo stato della memoria si traduce nell'input [35, 161] e in questo caso la lunghezza dell'input W=2 quindi mi aspetto una lunghezza dell'output Z=4.
+
+Successivamente legge la parola presente all'indirizzo 1 e la elabora secondo il funzionamento del codificatore convoluzionale.  Essendo la prima parola letta il codificatore parte dallo stato S00. Di seguito sono riportati gli stream in input e output dal codificatore: 
+\\
+\\
+\begin{tabular}{c c c}
+	Stream & Codifica binaria & Parole corrispondenti \\
+	Input &  0010 0011 & 35 \\
+	Output & 0000 1101  1100 1110& 13 206 \\
+\end{tabular}
+\\
+\\
+\\
+A seguito di questa codifica il codificatore convoluzionale si trova nello stato S11. Dopo avere scritto in memoria le due parole il componente legge la seconda, e ultima, parola ed esegue la codifica partendo con lo stato iniziale del codificatore pari a S11. Di seguito sono riportati gli stream in input e output dal codificatore: 
+\\
+\\
+\begin{tabular}{c c c}
+	Stream & Codifica binaria & Parole corrispondenti \\
+	Input & 1010 0001 & 161 \\
+	Output & 0110 0001 1100 0011 & 97 e 195 \\
+\end{tabular}
+\\
+\\
+\\
+Le ulteriori due parole vengo quindi scritte in memoria e una volta concluso il processo la memoria appare come rappresentato di seguito.
 \\
 \\
 \begin{tabular}{c c c}
@@ -79,14 +128,13 @@ Questo stato della memoria si traduce nell'input [35, 161] e in questo caso la l
 \end{tabular}
 \\
 \\
-Rappresenta l'output [13, 206, 97, 195] dove la codifica dei numeri [13, 206] è l'output prodotto dai bit dal 35 in ingresso. Mentre [97, 195] sono il risultato dei bit presenti nella la codifica di 161.
 
 \subsection{Ipotesi Progettuali}
 \begin{itemize}
-\item {Si utilizza la scheda Artix-7 FPGA xc7a200tfbg484-1}
+\item {Per lo sviluppo del componente si è utilizzata una scheda Artix-7 FPGA xc7a200tfbg484-1.}
 \item {Ogni byte può contenere numeri da 0 a 255.}
 \item {La quantità di numeri in ingresso (W) è contenuta in una parola da un byte quindi anche il numero massimo di parole da tradurre è 255.}
-\item {Dato che l'input occupa al massimo 256 byte posso scrivere sui byte successivi quindi l'output parte sempre dal millesimo indirizzo di memoria che sicuramente non contiene l'input}
+\item {Dato che l'input occupa al massimo 256 byte è possibile scrivere in memoria a partire dai byte successivi. Da specifiche si scrive sempre a partire dall'indirizzo 1000 che quindi sicuramente non conterrà l'input.}
 \end{itemize}
 
 
@@ -95,10 +143,10 @@ Rappresenta l'output [13, 206, 97, 195] dove la codifica dei numeri [13, 206] è
 %	SECTION 2
 %----------------------------------------------------------------------------------------
 
-\section{Architetttura}
-L'implementazione è stata realizzata in un solo modulo per sempllicità, si possono distinguere due parti all'interno della macchina che cooperano per raggiungere il risultato. È presente una macchina che simula il funzionamento dell'automa a stati finiti fornito nella specifica, questa è responsabile della traduzione uno a due dei bit. Inoltre è presente una seconda macchina principale che si occupa della lettura e scrittura dei flussi di bit e tratta la prima come una scatola nera. Ciascuna macchina ha una variabile separata che contiene il suo stato.
+\section{Architettura}
+L'implementazione è stata realizzata in un solo modulo per semplicità, si possono distinguere due parti all'interno della macchina che cooperano per raggiungere il risultato. È presente una macchina che simula il funzionamento dell'automa a stati finiti fornito nella specifica che rappresenta il codificatore convoluzionale, è responsabile della traduzione uno a due dei bit. Inoltre è presente una seconda macchina principale che si occupa della lettura e scrittura dei flussi di bit e tratta la prima come una scatola nera. Ciascuna macchina ha un segnale distinto che contiene il suo stato.
 
-\subsection{Segnali}
+\subsection{Interfaccia}
 \begin{itemize}
 	\item \textbf{i\_clk:} Segnale di clock
 	\item \textbf{i\_rst:} Segnale di reset, deve riportare la macchina allo stato iniziale.
@@ -113,20 +161,20 @@ L'implementazione è stata realizzata in un solo modulo per sempllicità, si pos
 	\item \textbf{o\_we:} Se settato a 1 l'operazione richiesta da o\_en è scrittura altrimenti è lettura.
 	\item \textbf{o\_data:} Vettore da 8 bit che contiene il la parola di memoria da scrivere.
 \end{itemize}
-
+\pagebreak
 \subsection{Descrizione ad alto livello}
-Questa è la descrizione a parole delle fasi che l'esecuzione segue. All'interno del programma ciascuna di queste diverse fasi corrisponde ad uno stato (o a più stati).
+Questa è la descrizione a parole delle fasi che l'esecuzione segue. All'interno del componente ciascuna di queste diverse fasi corrisponde ad uno stato (o a più stati).
 
 \begin{enumerate}
 	\item Inizio:
 	\begin{enumerate}
-		\item Legge il primo byte di memoria contenente la lunghezza dell'input e salva il valore in una variabile.
-		\item Inizializza il punto di lettura al secondo byte e quello di scrittura al millesimo.
+		\item Legge il primo byte di memoria contenente la lunghezza dell'input e salva il valore in un segnale.
+		\item Inizializza l'indirizzo di lettura al secondo byte e quello di scrittura al byte 1000.
 	\end{enumerate}
 	\item Traduzione:
 	\begin{enumerate}
 		\item Legge un byte e sposta il punto di lettura.
-		\item Simula un passo dell'automa dando in ingresso un bit dal byte appena letto. (Ripetuto 4 volte)
+		\item Simula un passo dell'automa del codificatore usando in ingresso un bit dal byte appena letto e aggiungendo due bit al segnale di output. (Ripetuto 4 volte)
 		\item L'output dell'automa ora contiene 8 bit quindi viene salvato in una parola di memoria e si incrementa l'indirizzo di scrittura.
 		\item Se sono rimasti bit da tradurre nel byte letto torna al punto 2.b
 		\item Altrimenti se sono rimasti byte da leggere torna al punto 2.a
@@ -134,7 +182,7 @@ Questa è la descrizione a parole delle fasi che l'esecuzione segue. All'interno
 	\end{enumerate}
 \end{enumerate}
 
-Ogni operazione di lettura nella memoria si scompone in più stati nel programma: richiesta della lettura, attesa della fine dell'operazione, utilizzo del dato letto o salvataggio in una variabile. 
+Ogni operazione di lettura nella memoria si scompone in più stati nel programma: richiesta della lettura, attesa della fine dell'operazione, utilizzo del dato letto o salvataggio in un segnale. 
 
 \subsection{Diagramma degli stati}
 
@@ -173,24 +221,18 @@ Ogni operazione di lettura nella memoria si scompone in più stati nel programma
 \\
 \\
 \begin{itemize}
-	\item \textbf{START:} Lo stato in cui la macchina è all'inizio dell'esecuzione del programma. In presenza del segnale i\_state = '1' imposta valori iniziali e passa allo stato successivo.
-	\item \textbf{WAIT\_WORDS\_NUMBER:} Un ciclo di clock dopo che la lettura è stata richiesta riporta a 0 il segnale di lettura.
-	\item \textbf{FETCH\_WORD\_NUMBER:} Dopo la fine della lettura salva il numero di byte in input nella variabile words\_left. Nel caso particolare in cui ci sono 0 byte in ingresso passa direttamente allo stato Done altrimenti incomincia con la lettura del primo byte.
-	\item \textbf{CALL\_READ:} Manda segnale di richiesta di lettura e imposta l'indirizzo corretto.
-	\item \textbf{WAIT\_READ:} Un ciclo di clock dopo che la lettura è stata richiesta riporta a 0 il segnale di lettura.
+	\item \textbf{START:} Lo stato in cui la macchina è all'inizio dell'esecuzione del programma. In presenza del segnale i\_state = '1' imposta valori iniziali, fa la richiesta di lettura all'indirizzo 0 e passa allo stato successivo.
+	\item \textbf{WAIT\_WORDS\_NUMBER:} Un ciclo di clock dopo che la lettura è stata richiesta riporta a 0 il segnale o\_en.
+	\item \textbf{FETCH\_WORD\_NUMBER:} Dopo la fine della lettura salva il numero di byte in input nella variabile words\_left. Nel caso particolare in cui ci sono 0 byte in ingresso passa direttamente allo stato DONE, altrimenti incomincia con la lettura del primo byte.
+	\item \textbf{CALL\_READ:} Richiede la lettura e imposta l'indirizzo corretto.
+	\item \textbf{WAIT\_READ:} Un ciclo di clock dopo che la lettura è stata richiesta porta a 0 il segnale o\_en.
 	\item \textbf{FETCH\_READ:} Dopo che la lettura è terminata salva il valore letto in w\_word.
-	\item \textbf{ENCODER\_1\_TO\_2:} In questo stato viene simulato l'automa che effettua la traduzione, lo stato di tale automa è salvato in una variabile separata chiamata internal\_state. Ogni 4 bit tradotti z\_word, ovvero la parola da un byte in uscita, è piena e quindi si passa alla scrittura di tale parola in memoria.
-	\item \textbf{WRITE:} Scrive z\_word in memoria. Dopodiché se rimangono dei bit da leggere in w\_word torna allo stato dell'encoder. Se la parola è finita ma ci sono altre parole in input da leggere torna a Call Reader, se tutte le parole sono state tradotte allora passa a Done.
-	\item \textbf{DONE:} Manda il segnale o\_done a 1.
-	\item \textbf{AFTER\_DONE:} Prima di tornare allo stato Start si assicura che il segnale i\_start che era stato dato all'inizio sia stato riportato a 0. Inotre riporta a 0 il segnale o\_done.
+	\item \textbf{ENCODER\_1\_TO\_2:} In questo stato viene simulato il codificatore che effettua la traduzione, lo stato di tale automa è salvato in un segnale separato chiamato internal\_state. Ogni 4 bit tradotti z\_word, ovvero la parola da un byte in uscita, è piena e quindi si passa alla scrittura di tale parola in memoria.
+	\item \textbf{WRITE:} Scrive z\_word in memoria. Dopodiché se rimangono dei bit da leggere in w\_word torna allo stato dell'encoder. Se la parola è finita ma ci sono altre parole in input da leggere torna a CALL READER, se tutte le parole sono state tradotte allora passa a DONE.
+	\item \textbf{DONE:} Porta il segnale o\_done a 1.
+	\item \textbf{AFTER\_DONE:} Prima di tornare allo stato START si assicura che il segnale i\_start che era stato dato all'inizio sia stato riportato a 0 e in tal caso riporta a 0 il segnale o\_done.
 \end{itemize}
-
-
-
-\subsection{Macchina a stati finiti?}
-
-
-
+\pagebreak
 %----------------------------------------------------------------------------------------
 %	SECTION 3
 %----------------------------------------------------------------------------------------
@@ -205,16 +247,16 @@ Il componente sviluppato è sintetizzabile ed implementabile.
 \end{figure}
 Nella seguente tabella sono indicati i componenti utilizzati nella sintesi.
 \begin{center}
-	\begin{tabular}{|c|c|c|c|}
-		\hline
+	\begin{tabular}{c|c|c|c}
+		
 		Site Type   & Used & Available & Utilization\% \\
 		\hline
 		LUT as Logic & 117 & 134600 & 0.09 \\
-		\hline
+		
 		Register as Flip Flop & 95 & 269200  & 0.04\\
-		\hline
+		
 		F7 Muxes & 1 & 67300 & <0.01\\
-		\hline
+		
 	\end{tabular}
 \end{center}
 
@@ -277,21 +319,8 @@ Tramite questo test si verifica il corretto funzionamento nel caso di sequenza d
 	\caption{Post-synthesis functional simulation waveform}
 \end{figure}
 
-\subsubsection{Double processing sulla stessa RAM}
-Tramite questo test si verifica il corretto funzionamento nel caso di scrittura sulla stessa RAM.
-\begin{description}
-	\item[Behavioural] 9250 ns
-	\item[Post-synthesis functional] 9550100 ps
-	\item[Post-synthesis timing] 9553714 ps
-\end{description}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=1\textwidth]{Assets/tb5.png}
-	\caption{Post-synthesis functional simulation waveform}
-\end{figure}
-
 \subsubsection{Tests con reset}
-Test bench, con reset dopo ogni test, che effettua 1000 test (generati casualmente con uno script Python).
+Test bench, con reset dopo ogni test, che effettua 1000 test (generati casualmente con uno script Python) per testare ulteriormente il componente.
 \begin{description}
 	\item[Behavioural] 172743250 ns
 	\item[Post-synthesis functional] 172943150100 ps
@@ -300,14 +329,14 @@ Test bench, con reset dopo ogni test, che effettua 1000 test (generati casualmen
 In questo caso non si riporta grafico della forma d'onda perché non è possibile distinguere i valori che i segnali assumono nella vista "fit".
 
 \subsubsection{Tests senza reset}
-Test bench, senza reset dopo ogni test, che effettua 1000 test (generati casualmente con uno script Python).
+Test bench, senza reset dopo ogni test, che effettua 1000 test (generati casualmente con uno script Python) per testare ulteriormente il componente.
 \begin{description}
 	\item[Behavioural] 172543450 ns
 	\item[Post-synthesis functional] 172743350100 ps
 	\item[Post-synthesis timing] 172743353714 ps
 \end{description}
 In questo caso non si riporta grafico della forma d'onda perché non è possibile distinguere i valori che i segnali assumono nella vista "fit".
-
+\pagebreak
 %----------------------------------------------------------------------------------------
 %	SECTION 4
 %----------------------------------------------------------------------------------------
