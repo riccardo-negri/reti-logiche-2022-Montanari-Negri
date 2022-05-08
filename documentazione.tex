@@ -110,6 +110,21 @@ Rappresenta l'output [13, 206, 97, 195] dove la codifica dei numeri [13, 206] è
 \item {Dato che l'input occupa al massimo 256 byte posso scrivere sui byte successivi quindi l'output parte sempre dal millesimo indirizzo di memoria che sicuramente non contiene l'input}
 \end{itemize}
 
+\subsection{Segnali}
+\begin{itemize}
+	\item \textbf{i\_clk:} Segnale di clock
+	\item \textbf{i\_rst:} Segnale di reset, deve riportare la macchina allo stato iniziale.
+	\item \textbf{i\_start:} Quando viene portato a 1 la macchina comincia ad operare e prima di terminare aspetta che sia riportato a 0 (handshake).
+	\item \textbf{i\_data:} Vettore da 8 bit che contiene il la parola di memoria che è stata letta.
+\end{itemize}
+
+\begin{itemize}
+	\item \textbf{o\_done:} Quando la macchina ha finito l'esecuzione viene portato a 1 e aspetta che i\_start sia 0 poi anche 0\_done è riportato a 0 (handshake).
+	\item \textbf{o\_en:} Se settato a 1 richiede l'operazione di lettura o scrittura.
+	\item \textbf{o\_we:} Se settato a 1 l'operazione richiesta da o\_en è scrittura altrimenti è lettura.
+	\item \textbf{o\_data:} Vettore da 8 bit che contiene il la parola di memoria da scrivere.
+\end{itemize}
+
 
 
 
