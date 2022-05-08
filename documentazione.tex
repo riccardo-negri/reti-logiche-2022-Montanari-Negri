@@ -164,16 +164,16 @@ Ogni operazione di lettura nella memoria si scompone in più stati nel programma
 \begin{tikzpicture}[shorten >=1pt,node distance=3cm,node font=\small,on grid,auto,initial text={begin}]
 	\tikzstyle{every state}=[fill={rgb:black,1;white,10}]
 	
-	\node[state,text width=1.5cm,align=center,initial ]  (START)                 {Start};
-	\node[state,text width=1.5cm,align=center]                    (WWN) [right of=START]  {Wait\\Words\\Number};
-	\node[state,text width=1.5cm,align=center]                    (FWN) [right of=WWN]  {Fetch\\Words\\Number};
-	\node[state,text width=1.5cm,align=center]                    (DONE) [below of=WWN]  {Done};
-	\node[state,text width=1.5cm,align=center]                    (AD) [left of=DONE]  {After\\Done};
-	\node[state,text width=1.5cm,align=center]                    (CR) [below right of=FWN]  {Call\\Read};
-	\node[state,text width=1.5cm,align=center]                    (WR) [below right  of=CR]  {Wait\\Read};
-	\node[state,text width=1.5cm,align=center]                    (FR) [below of=WR]  {Fetch\\Read};
-	\node[state,text width=1.5cm,align=center]                    (WRITE) [below of=DONE]  {Write};
-	\node[state,text width=1.5cm,align=center]                    (E12) [below left of=FR]  {Encoder\\1 to 2};
+	\node[state,text width=1.5cm,align=center,initial ]  (START)                 {START};
+	\node[state,text width=1.5cm,align=center]                    (WWN) [right of=START]  {WAIT\\WORDS\\NUMBER};
+	\node[state,text width=1.5cm,align=center]                    (FWN) [right of=WWN]  {FETCH\\WORDS\\NUMBER};
+	\node[state,text width=1.5cm,align=center]                    (DONE) [below of=WWN]  {DONE};
+	\node[state,text width=1.5cm,align=center]                    (AD) [left of=DONE]  {AFTER\\DONE};
+	\node[state,text width=1.5cm,align=center]                    (CR) [below right of=FWN]  {CALL\\READ};
+	\node[state,text width=1.5cm,align=center]                    (WR) [below right  of=CR]  {WAIT\\READ};
+	\node[state,text width=1.5cm,align=center]                    (FR) [below of=WR]  {FETCH\\READ};
+	\node[state,text width=1.5cm,align=center]                    (WRITE) [below of=DONE]  {WRITE};
+	\node[state,text width=1.5cm,align=center]                    (E12) [below left of=FR]  {ENCODER\\1 TO 2};
 	
 	\path[->]
 	(START) edge [bend left] node [above] {i\_start = '1'} (WWN)
@@ -194,16 +194,16 @@ Ogni operazione di lettura nella memoria si scompone in più stati nel programma
 \\
 \\
 \begin{itemize}
-	\item \textbf{Start:} Lo stato in cui la macchina è all'inizio dell'esecuzione del programma. In presenza del segnale i\_state = '1' imposta valori iniziali e passa allo stato successivo.
-	\item \textbf{Wait Words Number:} Un ciclo di clock dopo che la lettura è stata richiesta riporta a 0 il segnale di lettura.
-	\item \textbf{Fetch Word Number:} Dopo la fine della lettura salva il numero di byte in input nella variabile words\_left. Nel caso particolare in cui ci sono 0 byte in ingresso passa direttamente allo stato Done altrimenti incomincia con la lettura del primo byte.
-	\item \textbf{Call Read:} Manda segnale di richiesta di lettura e imposta l'indirizzo corretto.
-	\item \textbf{Wait Read:} Un ciclo di clock dopo che la lettura è stata richiesta riporta a 0 il segnale di lettura.
-	\item \textbf{Fetch Read:} Dopo che la lettura è terminata salva il valore letto in w\_word.
-	\item \textbf{Encoder 1 to 2:} In questo stato viene simulato l'automa che effettua la traduzione, lo stato di tale automa è salvato in una variabile separata chiamata internal\_state. Ogni 4 bit tradotti z\_word, ovvero la parola da un byte in uscita, è piena e quindi si passa alla scrittura di tale parola in memoria.
-	\item \textbf{Write:} Scrive z\_word in memoria. Dopodiché se rimangono dei bit da leggere in w\_word torna allo stato dell'encoder. Se la parola è finita ma ci sono altre parole in input da leggere torna a Call Reader, se tutte le parole sono state tradotte allora passa a Done.
-	\item \textbf{Done:} Manda il segnale o\_done a 1.
-	\item \textbf{After Done:} Prima di tornare allo stato Start si assicura che il segnale i\_start che era stato dato all'inizio sia stato riportato a 0. Inotre riporta a 0 il segnale o\_done.
+	\item \textbf{START:} Lo stato in cui la macchina è all'inizio dell'esecuzione del programma. In presenza del segnale i\_state = '1' imposta valori iniziali e passa allo stato successivo.
+	\item \textbf{WAIT\_WORDS\_NUMBER:} Un ciclo di clock dopo che la lettura è stata richiesta riporta a 0 il segnale di lettura.
+	\item \textbf{FETCH\_WORD\_NUMBER:} Dopo la fine della lettura salva il numero di byte in input nella variabile words\_left. Nel caso particolare in cui ci sono 0 byte in ingresso passa direttamente allo stato Done altrimenti incomincia con la lettura del primo byte.
+	\item \textbf{CALL\_READ:} Manda segnale di richiesta di lettura e imposta l'indirizzo corretto.
+	\item \textbf{WAIT\_READ:} Un ciclo di clock dopo che la lettura è stata richiesta riporta a 0 il segnale di lettura.
+	\item \textbf{FETCH\_READ:} Dopo che la lettura è terminata salva il valore letto in w\_word.
+	\item \textbf{ENCODER\_1\_TO\_2:} In questo stato viene simulato l'automa che effettua la traduzione, lo stato di tale automa è salvato in una variabile separata chiamata internal\_state. Ogni 4 bit tradotti z\_word, ovvero la parola da un byte in uscita, è piena e quindi si passa alla scrittura di tale parola in memoria.
+	\item \textbf{WRITE:} Scrive z\_word in memoria. Dopodiché se rimangono dei bit da leggere in w\_word torna allo stato dell'encoder. Se la parola è finita ma ci sono altre parole in input da leggere torna a Call Reader, se tutte le parole sono state tradotte allora passa a Done.
+	\item \textbf{DONE:} Manda il segnale o\_done a 1.
+	\item \textbf{AFTER\_DONE:} Prima di tornare allo stato Start si assicura che il segnale i\_start che era stato dato all'inizio sia stato riportato a 0. Inotre riporta a 0 il segnale o\_done.
 \end{itemize}
 
 
