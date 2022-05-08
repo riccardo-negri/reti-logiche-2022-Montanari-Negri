@@ -223,7 +223,7 @@ Ogni operazione di lettura nella memoria si scompone in più stati nel programma
 \begin{itemize}
 	\item \textbf{START:} Lo stato in cui la macchina è all'inizio dell'esecuzione del programma. In presenza del segnale i\_state = '1' imposta valori iniziali, fa la richiesta di lettura all'indirizzo 0 e passa allo stato successivo.
 	\item \textbf{WAIT\_WORDS\_NUMBER:} Un ciclo di clock dopo che la lettura è stata richiesta riporta a 0 il segnale o\_en.
-	\item \textbf{FETCH\_WORD\_NUMBER:} Dopo la fine della lettura salva il numero di byte in input nella variabile words\_left. Nel caso particolare in cui ci sono 0 byte in ingresso passa direttamente allo stato DONE, altrimenti incomincia con la lettura del primo byte.
+	\item \textbf{FETCH\_WORD\_NUMBER:} Dopo la fine della lettura salva il numero di byte in input nel segnale words\_left. Nel caso particolare in cui ci sono 0 byte in ingresso passa direttamente allo stato DONE, altrimenti incomincia con la lettura del primo byte.
 	\item \textbf{CALL\_READ:} Richiede la lettura e imposta l'indirizzo corretto.
 	\item \textbf{WAIT\_READ:} Un ciclo di clock dopo che la lettura è stata richiesta porta a 0 il segnale o\_en.
 	\item \textbf{FETCH\_READ:} Dopo che la lettura è terminata salva il valore letto in w\_word.
@@ -342,7 +342,14 @@ In questo caso non si riporta grafico della forma d'onda perché non è possibil
 %----------------------------------------------------------------------------------------
 
 \section{Conclusioni}
-
+A seguito di estensivo testing effettuato tramite test benches scritti sia manualmente che generati casualmente, si ritiene che l’architettura progettata rispetti le specifiche. Le simulazioni sperimentali hanno mostrato la robustezza del componente che anche in condizioni di “stress” riesce a portare a termine il task richiesto.
+\\
+\\
+Nella realizzazione del componente si è utilizzato un singolo process per avere una maggiore chiarezza e un minore utilizzo di segnali.
+\\
+\\
+Il design è risultato sintetizzabile ed implementabile. La soluzione adottata sfrutta quasi interamente LUT e Flip Flop e un F7 Muxes e non fa quindi uso di Latch.
+\\
 
 %----------------------------------------------------------------------------------------
 
