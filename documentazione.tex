@@ -140,8 +140,7 @@ Questa è la descrizione a parole delle fasi che l'esecuzione segue. All'interno
 	\end{enumerate}
 \end{enumerate}
 
-Ogni operazione di lettura o scrittura nella memoria si scompone in più stati nel programma.
-Ad esempio nel caso della lettura: richiesta della lettura, attesa della fine dell'operazione, utilizzo del dato letto o salvataggio in una variabile. 
+Ogni operazione di lettura nella memoria si scompone in più stati nel programma: richiesta della lettura, attesa della fine dell'operazione, utilizzo del dato letto o salvataggio in una variabile. 
 
 \subsection{Diagramma degli stati}
 
@@ -162,21 +161,35 @@ Ad esempio nel caso della lettura: richiesta della lettura, attesa della fine de
 	\node[state,text width=1.5cm,align=center]                    (E12) [below left of=FR]  {Encoder\\1 to 2};
 	
 	\path[->]
-	(START) edge [bend left] node [above] {i start = '1'} (WWN)
+	(START) edge [bend left] node [above] {i\_start = '1'} (WWN)
 	(WWN) edge (FWN)
-	(FWN) edge [bend left] node {i data = 0} (DONE)
-	(FWN) edge [bend left] node {i data $\ne$ 0} (CR)
+	(FWN) edge [bend left] node {i\_data = 0} (DONE)
+	(FWN) edge [bend left] node {i\_data $\ne$ 0} (CR)
 	(CR) edge [bend left] (WR)
 	(WR) edge (FR)
 	(FR) edge [bend left](E12)
-	(E12) edge [loop below] node [align=center] {w word index has\\any other value} ()
-	(E12) edge [bend right] node [below,align=center] {\\\\w word\\index = 0 or 4} (WRITE)
-	(WRITE) edge [bend right] node [below,align=center] {\\not\\finished \\reading} (E12)
-	(WRITE) edge node {words left = 0} (DONE)
-	(WRITE) edge [bend right] node [align=center] {finished\\reading} (CR)
+	(E12) edge [loop below] node [align=center] {w\_word\_index ha\\qualsiasi altro valore} ()
+	(E12) edge [bend right] node [above,align=right] {\\\\w\_word\_index\\= 0 or 4} (WRITE)
+	(WRITE) edge [bend right] node [below,align=center] {\\not\\finished\_reading} (E12)
+	(WRITE) edge node {words\_left = 0} (DONE)
+	(WRITE) edge [bend right] node [align=center] {finished\_reading} (CR)
 	(DONE) edge (AD)
-	(AD) edge node {i start = '0'} (START);
+	(AD) edge node {i\_start = '0'} (START);
 \end{tikzpicture}
+\\
+\\
+\begin{itemize}
+	\item \textbf{Start:} Lo stato in cui la macchina è all'inizio dell'esecuzione del programma. In presenza del segnale i\_state = '1' imposta valori iniziali e passa allo stato successivo.
+	\item \textbf{Wait Words Number:} Un ciclo di clock dopo che la lettura è stata richiesta riporta a 0 il segnale di lettura.
+	\item \textbf{Fetch Word Number:} Dopo la fine della lettura salva il numero di byte in input nella variabile words\_left. Nel caso particolare in cui ci sono 0 byte in ingresso passa direttamente allo stato Done altrimenti incomincia con la lettura del primo byte.
+	\item \textbf{Call Read:} Manda segnale di richiesta di lettura e imposta l'indirizzo corretto.
+	\item \textbf{Wait Read:} Un ciclo di clock dopo che la lettura è stata richiesta riporta a 0 il segnale di lettura.
+	\item \textbf{Fetch Read:} Dopo che la lettura è terminata salva il valore letto in w\_word.
+	\item \textbf{Encoder 1 to 2:} In questo stato viene simulato l'automa che effettua la traduzione, lo stato di tale automa è salvato in una variabile separata chiamata internal\_state. Ogni 4 bit tradotti z\_word, ovvero la parola da un byte in uscita, è piena e quindi si passa alla scrittura di tale parola in memoria.
+	\item \textbf{Write:} Scrive z\_word in memoria. Dopodiché se rimangono dei bit da leggere in w\_word torna allo stato dell'encoder. Se la parola è finita ma ci sono altre parole in input da leggere torna a Call Reader, se tutte le parole sono state tradotte allora passa a Done.
+	\item \textbf{Done:} Manda il segnale o\_done a 1.
+	\item \textbf{After Done:} Prima di tornare allo stato Start si assicura che il segnale i\_start che era stato dato all'inizio sia stato riportato a 0. Inotre riporta a 0 il segnale o\_done.
+\end{itemize}
 
 
 
