@@ -223,7 +223,7 @@ Ogni operazione di lettura nella memoria si scompone in più stati: richiesta de
 \begin{itemize}
 	\item \textbf{START:} Lo stato in cui la macchina è all'inizio dell'esecuzione. In presenza del segnale i\_start = '1' imposta i valori iniziali, fa la richiesta di lettura all'indirizzo 0 e passa allo stato successivo.
 	\item \textbf{WAIT\_WORDS\_NUMBER:} Riporta a 0 il segnale o\_en.
-	\item \textbf{FETCH\_WORD\_NUMBER:} Dopo la fine della lettura salva il numero di byte in input nel segnale words\_left. Nel caso particolare in cui ci sono 0 byte in ingresso passa direttamente allo stato DONE, altrimenti incomincia con la lettura del primo byte.
+	\item \textbf{FETCH\_WORDS\_NUMBER:} Dopo la fine della lettura salva il numero di byte in input nel segnale words\_left. Nel caso particolare in cui ci sono 0 byte in ingresso passa direttamente allo stato DONE, altrimenti incomincia con la lettura del primo byte.
 	\item \textbf{CALL\_READ:} Richiede la lettura e imposta l'indirizzo corretto.
 	\item \textbf{WAIT\_READ:} Riporta a 0 il segnale o\_en.
 	\item \textbf{FETCH\_READ:} Dopo che la lettura è terminata salva il valore letto in w\_word.
@@ -319,7 +319,7 @@ Tramite questo test si verifica il corretto funzionamento nel caso di sequenza d
 	\caption{Post-synthesis functional simulation waveform}
 \end{figure}
 
-\subsubsection{Tests con reset}
+\subsubsection{Test con reset}
 Test bench, con reset dopo ogni test, che effettua 1000 test (generati casualmente con uno script Python) per testare ulteriormente il componente.
 \begin{description}
 	\item[Behavioural] 172743250 ns
@@ -328,7 +328,7 @@ Test bench, con reset dopo ogni test, che effettua 1000 test (generati casualmen
 \end{description}
 In questo caso non si riporta grafico della forma d'onda perché non è possibile distinguere i valori che i segnali assumono nella vista "fit".
 
-\subsubsection{Tests senza reset}
+\subsubsection{Test senza reset}
 Test bench, senza reset dopo ogni test, che effettua 1000 test (generati casualmente con uno script Python) per testare ulteriormente il componente.
 \begin{description}
 	\item[Behavioural] 172543450 ns
