@@ -1,11 +1,10 @@
 ----------------------------------------------------------------------------------
+--
 -- Authors: Montanari Tommaso and Negri Riccardo
 -- 
 -- Module Name: project_reti_logiche - Behavioral
--- Project Name: 
 -- 
 ----------------------------------------------------------------------------------
-
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
