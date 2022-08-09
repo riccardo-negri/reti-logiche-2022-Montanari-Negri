@@ -13,5 +13,5 @@ Languages:
 * LaTeX
 
 Development environments:
-* Vivado ([installation guide](https://github.com/riccardo-negri/reti-logiche-2022-Montanari-Negri/tree/main/HowTo/VivadoInstallation.md) and [usage guide](https://github.com/riccardo-negri/reti-logiche-2022-Montanari-Negri/tree/main/HowTo/VivadoUsage.md))
+* Vivado ([installation guide](https://github.com/riccardo-negri/reti-logiche-2022-Montanari-Negri/tree/main/how-to/VivadoInstallation.md) and [usage guide](https://github.com/riccardo-negri/reti-logiche-2022-Montanari-Negri/tree/main/how-to/VivadoUsage.md))
 * TeXstudio
