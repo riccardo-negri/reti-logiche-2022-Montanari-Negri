@@ -9,6 +9,7 @@ test
 *.synctex.gz
 *.log
 *.aux
+*.toc
 
 # VS Code related
 .vscode/
